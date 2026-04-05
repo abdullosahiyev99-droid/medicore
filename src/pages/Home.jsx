@@ -1,22 +1,8 @@
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import {
-  ArrowRight,
-  Brain,
-  Check,
-  ExternalLink,
-  Globe,
-  MapPin,
-  Pill,
-  Shield,
-  Star,
-  Stethoscope,
-  Users,
-  Zap,
-} from 'lucide-react'
-
-const LIVE_PROJECT_URL = 'https://medicore-qgsx.vercel.app/'
+import { ArrowRight, Brain, Pill, MapPin, Stethoscope, Star, Shield, Zap, Users } from 'lucide-react'
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 40 },
@@ -33,12 +19,13 @@ const STATS = [
 ]
 
 const FEATURES = [
-  { key: 'f1', icon: Brain, color: 'from-violet-500 to-purple-600' },
-  { key: 'f2', icon: Pill, color: 'from-emerald-500 to-teal-600' },
-  { key: 'f3', icon: MapPin, color: 'from-blue-500 to-cyan-600' },
-  { key: 'f4', icon: Stethoscope, color: 'from-rose-500 to-pink-600' },
+  { key: 'f1', icon: Brain,       color: 'from-violet-500 to-purple-600', link: '/qa' },
+  { key: 'f2', icon: Pill,        color: 'from-emerald-500 to-teal-600',  link: '/pharmacy' },
+  { key: 'f3', icon: MapPin,      color: 'from-blue-500 to-cyan-600',     link: '/map' },
+  { key: 'f4', icon: Stethoscope, color: 'from-rose-500 to-pink-600',     link: '/doctors' },
 ]
 
+// Floating blobs for the hero
 function Blob({ className, delay = 0 }) {
   return (
     <motion.div
@@ -49,6 +36,7 @@ function Blob({ className, delay = 0 }) {
   )
 }
 
+// Floating medicine card decoration
 function FloatingCard({ children, className, delay = 0 }) {
   return (
     <motion.div
@@ -71,28 +59,28 @@ export default function Home() {
 
   return (
     <main className="overflow-hidden">
+      {/* ── HERO ── */}
       <section
         ref={heroRef}
         className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden mesh-bg"
       >
+        {/* Noise texture */}
         <div className="absolute inset-0 noise pointer-events-none" />
 
+        {/* Blobs */}
         <Blob className="w-96 h-96 bg-primary-400 top-20 -left-20" delay={0} />
         <Blob className="w-80 h-80 bg-violet-400 bottom-20 -right-10" delay={2} />
         <Blob className="w-64 h-64 bg-cyan-400 top-1/2 left-1/2" delay={4} />
 
+        {/* Floating decorative cards */}
         <FloatingCard className="hidden lg:block top-32 right-16 text-center" delay={0.8}>
-          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-500/15 text-primary-600">
-            <Stethoscope size={20} />
-          </div>
+          <div className="text-2xl mb-1">🩺</div>
           <p className="text-xs font-600 text-slate-700 dark:text-slate-300">120+ Doctors</p>
         </FloatingCard>
 
         <FloatingCard className="hidden lg:block bottom-40 left-12" delay={1.2}>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white">
-              <Check size={16} />
-            </div>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-sm">✓</div>
             <div>
               <p className="text-xs font-600 text-slate-700 dark:text-slate-300">AI Diagnosis</p>
               <p className="text-[10px] text-slate-400">Instant results</p>
@@ -107,6 +95,7 @@ export default function Home() {
           </div>
         </FloatingCard>
 
+        {/* Main hero content */}
         <motion.div
           className="relative z-10 text-center max-w-4xl mx-auto px-6"
           style={{ y: heroY, opacity: heroOpacity }}
@@ -147,29 +136,28 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <motion.a
-              href={LIVE_PROJECT_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-primary text-base px-8 py-4 rounded-2xl inline-flex items-center gap-2"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              {t('hero.cta')}
-              <ExternalLink size={18} />
-            </motion.a>
-
-            <motion.a
-              href="#project-overview"
-              className="btn-secondary text-base px-8 py-4 rounded-2xl inline-flex items-center gap-2"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              {t('hero.cta2')}
-              <ArrowRight size={18} />
-            </motion.a>
+            <Link to="/qa">
+              <motion.button
+                className="btn-primary text-base px-8 py-4 rounded-2xl"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                {t('hero.cta')}
+                <ArrowRight size={18} />
+              </motion.button>
+            </Link>
+            <Link to="/doctors">
+              <motion.button
+                className="btn-secondary text-base px-8 py-4 rounded-2xl"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                {t('hero.cta2')}
+              </motion.button>
+            </Link>
           </motion.div>
 
+          {/* Stats */}
           <motion.div
             className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
@@ -186,6 +174,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
+        {/* Scroll indicator */}
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           animate={{ y: [0, 8, 0] }}
@@ -197,7 +186,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section id="project-overview" className="section">
+      {/* ── FEATURES ── */}
+      <section className="section">
         <div className="container-max">
           <motion.div className="text-center mb-16" {...fadeUp()}>
             <h2 className="font-display font-800 text-4xl sm:text-5xl text-slate-900 dark:text-white mb-4">
@@ -209,78 +199,115 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {FEATURES.map(({ key, icon: Icon, color }, i) => (
+            {FEATURES.map(({ key, icon: Icon, color, link }, i) => (
               <motion.div key={key} {...fadeUp(i * 0.1)}>
-                <div className="card h-full">
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center mb-5 shadow-lg`}>
-                    <Icon size={22} className="text-white" />
-                  </div>
-                  <h3 className="font-display font-700 text-lg text-slate-900 dark:text-white mb-2">
-                    {t(`features.${key}_title`)}
-                  </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                    {t(`features.${key}_desc`)}
-                  </p>
-                </div>
+                <Link to={link}>
+                  <motion.div
+                    className="card h-full cursor-pointer group"
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    transition={{ type: 'spring', stiffness: 300 }}
+                  >
+                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon size={22} className="text-white" />
+                    </div>
+                    <h3 className="font-display font-700 text-lg text-slate-900 dark:text-white mb-2">
+                      {t(`features.${key}_title`)}
+                    </h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                      {t(`features.${key}_desc`)}
+                    </p>
+                    <div className="mt-4 flex items-center gap-1 text-primary-600 dark:text-primary-400 text-sm font-600 group-hover:gap-2 transition-all">
+                      <span>Explore</span>
+                      <ArrowRight size={14} />
+                    </div>
+                  </motion.div>
+                </Link>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ── TRUST BANNER ── */}
+      <section className="section bg-gradient-to-r from-primary-600 to-primary-500 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{ backgroundImage: 'repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)', backgroundSize: '20px 20px' }} />
+        </div>
+        <div className="container-max relative z-10 text-center">
+          <motion.div {...fadeUp()}>
+            <Shield size={48} className="text-white/80 mx-auto mb-4" />
+            <h2 className="font-display font-800 text-3xl sm:text-4xl text-white mb-4">
+              Trusted by 50,000+ patients
+            </h2>
+            <p className="text-white/70 text-lg max-w-xl mx-auto">
+              HIPAA-compliant, end-to-end encrypted, and reviewed by licensed medical professionals.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── DOCTORS PREVIEW ── */}
       <section className="section">
         <div className="container-max">
-          <motion.div
-            className="relative overflow-hidden rounded-[32px] bg-slate-950 px-6 py-10 sm:px-10"
-            {...fadeUp()}
-          >
-            <div className="absolute inset-0 opacity-20">
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: 'radial-gradient(circle at top left, rgba(45, 212, 191, 0.6), transparent 35%), radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.5), transparent 30%)',
-                }}
-              />
+          <motion.div className="flex items-end justify-between mb-12" {...fadeUp()}>
+            <div>
+              <h2 className="font-display font-800 text-4xl sm:text-5xl text-slate-900 dark:text-white mb-3">
+                {t('doctors.title')}
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400">{t('doctors.subtitle')}</p>
             </div>
-
-            <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-2xl">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-700 uppercase tracking-[0.2em] text-white/70">
-                  <Globe size={14} />
-                  Official Project Link
-                </div>
-                <h2 className="font-display font-800 text-3xl sm:text-4xl text-white mb-4">
-                  medicore-qgsx.vercel.app
-                </h2>
-                <p className="text-base sm:text-lg text-white/70 leading-relaxed">
-                  This landing page now focuses only on your MediCore project. Demo sub-pages were removed from navigation so the site presents a single clear product.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <motion.a
-                  href={LIVE_PROJECT_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl"
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Open Live Site
-                  <ExternalLink size={18} />
-                </motion.a>
-                <motion.a
-                  href="mailto:hello@medicore.uz"
-                  className="btn-secondary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl"
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Contact
-                  <Shield size={18} />
-                </motion.a>
-              </div>
-            </div>
+            <Link to="/doctors" className="hidden sm:block">
+              <motion.button
+                className="btn-secondary"
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+              >
+                View all <ArrowRight size={14} />
+              </motion.button>
+            </Link>
           </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { name: 'Dr. Sarah Chen', specialty: 'General Practitioner', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&q=80', rating: 4.9, available: true },
+              { name: 'Dr. Amir Karimov', specialty: 'Cardiologist', img: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&q=80', rating: 4.8, available: true },
+              { name: 'Dr. Nilufar Yusupova', specialty: 'Dermatologist', img: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=300&q=80', rating: 4.8, available: true },
+            ].map((doc, i) => (
+              <motion.div key={doc.name} {...fadeUp(i * 0.1)}>
+                <motion.div
+                  className="card flex items-center gap-4 cursor-pointer"
+                  whileHover={{ y: -4, scale: 1.01 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  <div className="relative flex-shrink-0">
+                    <img
+                      src={doc.img}
+                      alt={doc.name}
+                      className="w-16 h-16 rounded-2xl object-cover"
+                    />
+                    {doc.available && (
+                      <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-400 border-2 border-white dark:border-slate-900" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-display font-700 text-slate-900 dark:text-white truncate">{doc.name}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{doc.specialty}</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star size={12} className="text-amber-400 fill-amber-400" />
+                      <span className="text-xs font-600 text-slate-700 dark:text-slate-300">{doc.rating}</span>
+                    </div>
+                  </div>
+                  <Link to="/doctors">
+                    <motion.button
+                      className="px-3 py-2 rounded-xl bg-primary-500/10 text-primary-600 dark:text-primary-400 text-xs font-600 hover:bg-primary-500/20 transition-colors"
+                      whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    >
+                      Book
+                    </motion.button>
+                  </Link>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
     </main>
