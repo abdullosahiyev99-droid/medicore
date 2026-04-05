@@ -2,21 +2,22 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Sun, Moon, Globe, ShoppingCart, Menu, X } from 'lucide-react'
+import { Sun, Moon, ExternalLink, Menu, X } from 'lucide-react'
 import Logo from '../ui/Logo'
-import { useThemeStore, useCartStore } from '../../store'
+import { useThemeStore } from '../../store'
 
 const LANGS = [
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'uz', label: "O'zbek", flag: '🇺🇿' },
-  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  { code: 'en', label: 'English' },
+  { code: 'uz', label: "O'zbek" },
+  { code: 'ru', label: 'Russian' },
 ]
+
+const LIVE_PROJECT_URL = 'https://medicore-qgsx.vercel.app/'
 
 export default function Navbar() {
   const { t, i18n } = useTranslation()
   const location = useLocation()
   const { dark, toggle } = useThemeStore()
-  const cartCount = useCartStore((s) => s.count())
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
@@ -27,7 +28,9 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => { setMobileOpen(false) }, [location])
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location])
 
   const changeLang = (code) => {
     i18n.changeLanguage(code)
@@ -35,15 +38,8 @@ export default function Navbar() {
     setLangOpen(false)
   }
 
-  const navLinks = [
-    { to: '/', label: t('nav.home') },
-    { to: '/qa', label: t('nav.qa') },
-    { to: '/pharmacy', label: t('nav.pharmacy') },
-    { to: '/doctors', label: t('nav.doctors') },
-    { to: '/map', label: t('nav.map') },
-  ]
-
-  const currentLang = LANGS.find((l) => l.code === i18n.language) || LANGS[0]
+  const currentLang = LANGS.find((lang) => lang.code === i18n.language) || LANGS[0]
+  const navLinks = [{ to: '/', label: t('nav.home') }]
 
   return (
     <>
@@ -56,10 +52,10 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="container-max flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-          {/* Logo */}
-          <Link to="/"><Logo size={34} /></Link>
+          <Link to="/">
+            <Logo size={34} />
+          </Link>
 
-          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link key={link.to} to={link.to}>
@@ -85,16 +81,24 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Actions */}
           <div className="flex items-center gap-2">
-            {/* Language */}
+            <a
+              href={LIVE_PROJECT_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden sm:inline-flex items-center gap-2 btn-ghost text-slate-600 dark:text-slate-400"
+            >
+              <span className="text-xs font-600">Live Site</span>
+              <ExternalLink size={16} />
+            </a>
+
             <div className="relative hidden sm:block">
               <motion.button
                 onClick={() => setLangOpen(!langOpen)}
                 className="btn-ghost text-slate-600 dark:text-slate-400"
-                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <span className="text-base">{currentLang.flag}</span>
                 <span className="text-xs font-600">{currentLang.code.toUpperCase()}</span>
               </motion.button>
               <AnimatePresence>
@@ -114,7 +118,7 @@ export default function Navbar() {
                           lang.code === i18n.language ? 'text-primary-600 dark:text-primary-400 font-600' : ''
                         }`}
                       >
-                        <span>{lang.flag}</span>
+                        <span>{lang.code.toUpperCase()}</span>
                         <span>{lang.label}</span>
                       </button>
                     ))}
@@ -123,11 +127,11 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* Theme toggle */}
             <motion.button
               onClick={toggle}
               className="btn-ghost text-slate-600 dark:text-slate-400"
-              whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <AnimatePresence mode="wait">
                 <motion.div
@@ -142,32 +146,11 @@ export default function Navbar() {
               </AnimatePresence>
             </motion.button>
 
-            {/* Cart */}
-            <Link to="/pharmacy">
-              <motion.div
-                className="relative btn-ghost text-slate-600 dark:text-slate-400"
-                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-              >
-                <ShoppingCart size={18} />
-                <AnimatePresence>
-                  {cartCount > 0 && (
-                    <motion.span
-                      key="badge"
-                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary-500 text-white text-[10px] font-700 flex items-center justify-center"
-                      initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                    >
-                      {cartCount}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            </Link>
-
-            {/* Mobile menu */}
             <motion.button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden btn-ghost text-slate-600 dark:text-slate-400"
-              whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </motion.button>
@@ -175,7 +158,6 @@ export default function Navbar() {
         </div>
       </motion.header>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -206,7 +188,20 @@ export default function Navbar() {
                 </motion.div>
               ))}
             </nav>
-            {/* Language in mobile */}
+
+            <motion.a
+              href={LIVE_PROJECT_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 flex items-center justify-center gap-2 px-5 py-4 rounded-2xl bg-primary-500 text-white font-display font-600"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <span>Live Site</span>
+              <ExternalLink size={18} />
+            </motion.a>
+
             <div className="mt-6 flex gap-2">
               {LANGS.map((lang) => (
                 <button
@@ -218,7 +213,7 @@ export default function Navbar() {
                       : 'border-slate-200 dark:border-slate-700'
                   }`}
                 >
-                  {lang.flag} {lang.code.toUpperCase()}
+                  {lang.code.toUpperCase()}
                 </button>
               ))}
             </div>
@@ -226,10 +221,7 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Click outside to close lang dropdown */}
-      {langOpen && (
-        <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
-      )}
+      {langOpen && <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />}
     </>
   )
 }

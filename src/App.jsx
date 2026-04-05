@@ -1,13 +1,9 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Home from './pages/Home'
-import QA from './pages/QA'
-import Pharmacy from './pages/Pharmacy'
-import Doctors from './pages/Doctors'
-import MapPage from './pages/MapPage'
 
 const pageVariants = {
   initial: { opacity: 0, y: 24 },
@@ -17,15 +13,13 @@ const pageVariants = {
 
 function AnimatedRoutes() {
   const location = useLocation()
+
   return (
     <AnimatePresence mode="wait">
       <motion.div key={location.pathname} variants={pageVariants} initial="initial" animate="animate" exit="exit">
         <Routes location={location}>
           <Route path="/" element={<Home />} />
-          <Route path="/qa" element={<QA />} />
-          <Route path="/pharmacy" element={<Pharmacy />} />
-          <Route path="/doctors" element={<Doctors />} />
-          <Route path="/map" element={<MapPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
